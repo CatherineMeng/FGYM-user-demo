@@ -83,11 +83,11 @@ int main(int argc, char **argv)
 
     InrExt.obj = In_rows.data();
     InrExt.param = 0;
-    InrExt.flags = 1|XCL_MEM_TOPOLOGY;
+    InrExt.flags = 0|XCL_MEM_TOPOLOGY;
 
     CrExt.obj = C_rows.data();
     CrExt.param = 0;
-    CrExt.flags = 2|XCL_MEM_TOPOLOGY;
+    CrExt.flags = 1|XCL_MEM_TOPOLOGY;
 
   printf("flags set\n");
     // Create the buffers and allocate memory
