@@ -1,0 +1,116 @@
+=======================
+  U200 software sim:
+=======================
+cd test_kn2row_vitis/sw_emu/
+
+g++ -Wall -g -std=c++11 ../host.cpp -o app.exe -I${XILINX_XRT}/include/ -I/tools/Xilinx/Vivado/2020.2/include/ -L/tools/Xilinx/Vivado/2020.2/lib/ -L${XILINX_VIVADO}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+
+emconfigutil --platform xilinx_u200_xdma_201830_2 --nd 1
+
+
+v++ -c -t sw_emu --config ../u200.cfg -k top -I../ ../block_mm_entry.cpp -o top.xo
+
+v++ -l -t sw_emu --config ../u200.cfg ./top.xo -o top.xclbin
+
+export XCL_EMULATION_MODE=sw_emu
+
+./app.exe
+
+
+=======================
+  U200 hardware emu:
+=======================
+
+cd ../hw_emu/
+
+g++ -Wall -g -std=c++11 ../host.cpp -o app.exe -I${XILINX_XRT}/include/ -I/tools/Xilinx/Vivado/2020.2/include/ -L/tools/Xilinx/Vivado/2020.2/lib/ -L${XILINX_VIVADO}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+g++ -Wall -g -std=c++11 ../host_plram.cpp -o app.exe -I${XILINX_XRT}/include/ -I/tools/Xilinx/Vivado/2020.2/include/ -L/tools/Xilinx/Vivado/2020.2/lib/ -L${XILINX_VIVADO}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+
+emconfigutil --platform xilinx_u200_xdma_201830_2 --nd 1
+
+
+v++ -c -t hw_emu --config ../u200.cfg -k top -I../ ../block_mm_entry.cpp -o top.xo
+v++ -c -t hw_emu --config ../u200_plram.cfg -k top -I../ ../block_mm_entry.cpp -o top.xo
+
+v++ -l -t hw_emu --config ../u200.cfg ./top.xo -o top.xclbin
+v++ -l -t hw_emu --config ../u200_plram.cfg ./top.xo -o top.xclbin
+
+export XCL_EMULATION_MODE=hw_emu
+
+./app.exe
+
+
+=======================
+	U200 hardware:
+=======================
+
+cd ../hw
+
+g++ -Wall -g -std=c++11 ../host.cpp -o app.exe -I${XILINX_XRT}/include/ -I/tools/Xilinx/Vivado/2020.2/include/ -L/tools/Xilinx/Vivado/2020.2/lib/ -L${XILINX_VIVADO}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+
+v++ -c -t hw --config ../u200.cfg -k top -I../ ../block_mm_entry.cpp -o top.xo
+
+v++ -l -t hw --config ../u200.cfg ./top.xo -o top.xclbin
+
+./app.exe
+
+
+
+
+
+
+
+=======================
+  U50 software sim:
+=======================
+cd test_kn2row_vitis/sw_emu/
+
+g++ -Wall -g -std=c++11 ../host.cpp -o app.exe -I${XILINX_XRT}/include/ -I/tools/Xilinx/Vivado/2020.2/include/ -L/tools/Xilinx/Vivado/2020.2/lib/ -L${XILINX_VIVADO}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+
+emconfigutil --platform xilinx_u50_xdma_201830_2 --nd 1
+
+
+v++ -c -t sw_emu --config ../u50.cfg -k top -I../ ../block_mm_entry.cpp -o top.xo
+
+v++ -l -t sw_emu --config ../u50.cfg ./top.xo -o top.xclbin
+
+export XCL_EMULATION_MODE=sw_emu
+
+./app.exe
+
+
+=======================
+  U50 hardware emu:
+=======================
+
+cd ../hw_emu/
+
+g++ -Wall -g -std=c++11 ../host.cpp -o app.exe -I${XILINX_XRT}/include/ -I/tools/Xilinx/Vivado/2020.2/include/ -L/tools/Xilinx/Vivado/2020.2/lib/ -L${XILINX_VIVADO}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+
+emconfigutil --platform xilinx_u50_gen3x16_xdma_201920_3 --nd 1
+
+
+v++ -c -t hw_emu --config ../u50.cfg -k top -I../ ../block_mm_entry.cpp -o top.xo
+
+v++ -l -t hw_emu --config ../u50.cfg ./top.xo -o top.xclbin
+
+export XCL_EMULATION_MODE=hw_emu
+
+./app.exe
+
+
+=======================
+	U50 hardware:
+=======================
+
+cd ../hw
+
+g++ -Wall -g -std=c++11 ../host.cpp -o app.exe -I${XILINX_XRT}/include/ -I/tools/Xilinx/Vivado/2020.2/include/ -L/tools/Xilinx/Vivado/2020.2/lib/ -L${XILINX_VIVADO}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+
+v++ -c -t hw --config ../u50.cfg -k top -I../ ../block_mm_entry.cpp -o top.xo
+
+v++ -l -t hw --config ../u50.cfg ./top.xo -o top.xclbin
+
+send to my own machine with u50
+
+./app.exe
