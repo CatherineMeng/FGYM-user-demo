@@ -1,0 +1,43 @@
+[Nathan: Look at "pretty table": https://pypi.org/project/prettytable/
+outtput shuold be somthing like belows (I only showed required metrics, the format can be better with the library "from prettytable import PrettyTable")]
+
+
+Latency breakdown (Averaged over n iterations)
++----------------+------+-------------+
+|   Task    	 |   %  | Raw Latency | 
++----------------+------+-------------+
+| env step       | 12.9 |  1158259 ms |
+| Host<->FPGA    | 32.4 |  1857594 ns |
+| Kernel<->Mem   | xxxx |   120900    |
+| Kernel-Compute | xxxx |   205556    |
+| Others *       | 1566 |  3806092    |
+| Total          | 5386 |  1554769    |
++----------------+------+-------------+
+
+
+Observation & Action transfer profiling result (Host<->main memory, Kernel read from main memory)
++-------------+---------+----------------+--------+
+|   Task      | Latency | Bandwidth Util | Util % |
++-------------+---------+----------------+--------+
+| PCIe: H->M  | 32.9 ms |  115 MB/s      | 28%    |
+| PCIe: H<-M  | 12.4 ms |  18  MB/s      |        |
++-------------+---------+----------------+--------+
+
+
+DDR R/W profiling result (Kernel read from/write into main memory)
+[Nathan: Note that there may be multiple rows of W/R, depending on vitis profiler result]
++-------------------+---------+----------------+--------+
+|   Task    	    | Latency | Bandwidth Util | Util % |
++-------------------+---------+----------------+--------+
+| DDR: M<-Kernel(W) | 12.9 ms |  115 MB/s      | 28%    |
+| DDR: M->Kernel(R) | 32.4 ms |  1857594 ns    |        |
++-------------------+---------+----------------+--------+
+
+Host-generated overhead
++-------+---------+-----+
+|  Type | Latency |  %  |
++-------+---------+-----+
+| Total | 12.9 ms | 28% |
++-------+---------+-----+
+Reward plot file path [Nathan: see cartpole.py]
+ 
