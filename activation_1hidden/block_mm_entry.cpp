@@ -37,7 +37,7 @@ void blockmatmul(hls::stream<blockvec> &Inrows, w1blockvec Wcols[], hls::stream<
 #pragma HLS aggregate variable=Inrows
 #pragma HLS aggregate variable=Wcols
 #pragma HLS aggregate variable=Crows
-	double C[BSIZE/P][64/T][P][T]={0}; //64 is the largest layer. change based on models
+	float C[BSIZE/P][64/T][P][T]={0}; //64 is the largest layer. change based on models
 	#pragma HLS ARRAY_PARTITION variable=C dim=3 complete
 	#pragma HLS ARRAY_PARTITION variable=C dim=4 complete
 
@@ -86,7 +86,7 @@ void blockmatmul3(hls::stream<blockvec> &Inrows, w3blockvec Wcols[], hls::stream
 #pragma HLS aggregate variable=Inrows
 #pragma HLS aggregate variable=Wcols
 #pragma HLS aggregate variable=Crows
-	double C[BSIZE/P][3/T2][P2][T2]={0};
+	float C[BSIZE/P][3/T2][P2][T2]={0};
 	#pragma HLS ARRAY_PARTITION variable=C dim=3 complete
 	#pragma HLS ARRAY_PARTITION variable=C dim=4 complete
 
@@ -125,14 +125,14 @@ void blockmatmul3(hls::stream<blockvec> &Inrows, w3blockvec Wcols[], hls::stream
 	}
 }
 
-void activation(hls::stream<blockvec> &Inrows, w3blockvec Wcols[], hls::stream<blockvec> &Outrows,const int L){
+void activation(hls::stream<blockvec> &Inrows, float bias[], hls::stream<blockvec> &Outrows,const int L){
 	for (int i = 0; i < L; i++){
 		#pragma HLS PIPELINE
 		blockvec temp = Inrows.read();
 		blockvec temp_out;
 		for (int j = 0; j < BSIZE; j++){
 			#pragma HLS UNROLL
-			temp_out.a[j]=hls::tanh(temp.a[j]);
+			temp_out.a[j]=hls::tanh(temp.a[j]+bias[i]);
 			// temp.a[j]=tmp;
 		}
 		Outrows.write(temp_out);
@@ -164,14 +164,16 @@ void top(blockvec *A, blockvec *C){
 
 	hls::stream<blockvec> inpipe;
 	w1blockvec w1bram[L1];
-	w1blockvec w2bram[L2];
-	w3blockvec w3bram[L3];
-	hls::stream<blockvec> outpipe[3];
-	hls::stream<blockvec> actpipe[3];
+	w3blockvec w2bram[L2];
+  float bias1[L2];
+  float bias2[L3];
+
+	hls::stream<blockvec> outpipe[4];
+	//hls::stream<blockvec> actpipe[3];
 	#pragma HLS STREAM variable=inpipe depth=64
 	#pragma HLS STREAM variable=outpipe depth=64
-	#pragma HLS STREAM variable=actpipe depth=64
-printf("everything good 1\n");
+	//#pragma HLS STREAM variable=actpipe depth=64
+//printf("everything good 1\n");
 //	Init on-chip memory
 	for (int i=0; i<L1;i++){
 		#pragma HLS PIPELINE
@@ -187,27 +189,32 @@ printf("everything good 1\n");
 			w2bram[i].a[j]=i;
 		}
 	}
-	for (int i=0; i<L3;i++){
-		#pragma HLS PIPELINE
-		for  (int j=0; j<L4;j++){
-			#pragma HLS UNROLL
-			w3bram[i].a[j]=1;
-		}
+  for  (int j=0; j<L2;j++){
+		#pragma HLS UNROLL
+		bias1[j]=1;
 	}
- printf("initiation suceeded 1\n");
+  for  (int j=0; j<L3;j++){
+		#pragma HLS UNROLL
+		bias2[j]=2;
+	}
+ //printf("initiation suceeded 1\n");
 	
   #pragma HLS DATAFLOW
 	loadIn(A, inpipe, L1);
- printf("load 1\n");
+ //printf("load 1\n");
 //	loadW(w1blockvec W[], wpipe[1], L1);
 	blockmatmul(inpipe, w1bram, outpipe[0], L1,L2);
- printf("MM 1\n");
-	blockmatmul(outpipe[0], w2bram, outpipe[1],L2,L3);
- printf("MM 2\n");
-	blockmatmul3(outpipe[1], w3bram, outpipe[2],L3,L4);
- printf("MM 3\n");
-	storeDDR(C, outpipe[2], L4);
-  printf("kernel really finished\n");
+ //printf("MM 1\n");
+//	blockmatmul(outpipe[0], w2bram, outpipe[1],L2,L3);
+// printf("MM 2\n");
+  activation(outpipe[0], bias1, outpipe[1],L2);
+  //printf("activation 1\n");
+	blockmatmul3(outpipe[1], w2bram, outpipe[2],L2,L3);
+  //printf("MM 2\n");
+  activation(outpipe[2], bias2, outpipe[3],L3);
+  //printf("activation 2\n");
+	storeDDR(C, outpipe[3], L3);
+  //printf("kernel really finished\n");
 }
 }
 

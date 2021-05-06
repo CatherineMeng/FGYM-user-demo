@@ -57,7 +57,7 @@ int main(int argc, char **argv)
     printf("here 1\n");
     
 
-    double A_ini[BSIZE*L1];
+    float A_ini[BSIZE*L1];
 //    float C_ini[BSIZE*L4];
  //   float C_ref[BSIZE*L4];
     
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     std::cout << "init A_ini matrix." << std::endl;
     for (i = 0; i < BSIZE; i++) {
         for (j = 0; j < L1; j++) {
-            A_ini[i*L1+j] = i+2;
+            A_ini[i*L1+j] = i;
         }
     }
     for (i = 0; i < BSIZE; i++) {
@@ -83,11 +83,11 @@ int main(int argc, char **argv)
 
     InrExt.obj = In_rows.data();
     InrExt.param = 0;
-    InrExt.flags = 1|XCL_MEM_TOPOLOGY;
+    InrExt.flags = 0|XCL_MEM_TOPOLOGY;
 
     CrExt.obj = C_rows.data();
     CrExt.param = 0;
-    CrExt.flags = 2|XCL_MEM_TOPOLOGY;
+    CrExt.flags = 1|XCL_MEM_TOPOLOGY;
 
   printf("flags set\n");
     // Create the buffers and allocate memory
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
     FILE *fp;
     fp=fopen("./Crows.dat","w");
     printf("hi\n");
-    for (j = 0; j < L4; j++) {
+    for (j = 0; j < L3; j++) {
         for (i = 0; i < BSIZE; i++) {
             fprintf(fp, "%f ", C_rows[j].a[i]);
         }
