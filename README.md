@@ -1,7 +1,8 @@
 # FGYM
 Demonstrating the usage of FGYM: A Toolkit for benchmarking FPGA-accelerated Reinforcement Learning
 
-Software Dependencies:
+## Software Dependencies:
+
 [OpenAI Gym](https://gym.openai.com/docs/):
 ```
 pip install gym
