@@ -14,14 +14,16 @@ env = gym.wrappers.Monitor(env, './tmp', video_callable=lambda ep_id: True, forc
 env.reset()
 
 policy = Policy()
-policy.load_state_dict(torch.load('params_5_10.ckpt'))
+policy.load_state_dict(torch.load('params_6_15.ckpt'))
 policy.eval()
 
+rew_list=[]
 obs_list=[]
-for episode in range(1):
+for episode in range(10):
     prev_obs = None
     obs = env.reset()
-    for t in range(190000):
+    rew=0
+    for t in tqdm(range(190000)):
         #env.render()
 
         d_obs = policy.pre_process(obs, prev_obs)
@@ -30,24 +32,33 @@ for episode in range(1):
         
         prev_obs = obs
         obs, reward, done, info = env.step(policy.convert_action(action))
+        rew+=reward
         obs_list.append(obs)
         
         if done:
-            print('Episode %d (%d timesteps) - Reward: %.2f' % (episode, t, reward))
+            print('Episode %d (%d timesteps) - Reward: %.2f' % (episode, t, rew))
+            rew_list.append(rew)
             break
         
         #time.sleep(0.033)
 
 env.close()
 
+list_episodes = [i for i in range(10)]
+  
+plt.plot(list_episodes, rew_list)
+plt.title('Acc. Reward Vs Episodes')
+plt.xlabel('Episodes')
+plt.ylabel('Reward')
+plt.show()
 
 img = obs_list # some array of images
 frames = [] # for storing the generated images
 fig = plt.figure()
-for i in tqdm(range(len(obs_list))):
+for i in tqdm(range(len(obs_list)//100)):
     frames.append([plt.imshow(img[i], cmap=cm.Greys_r,animated=True)])
 
 ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True,
                                 repeat_delay=1000)
-ani.save('./movie_5_11.mp4')
+ani.save('./movie_6_15_2.mp4')
 #plt.show()
