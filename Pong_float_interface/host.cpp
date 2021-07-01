@@ -122,7 +122,7 @@ int main(int argc, char **argv)
         for(int j = 0; j < L2; j++){
             // +bias,relu
             L1_out[i][j]=(L1_out[i][j]+bias1[j]<0)? 0 : L1_out[i][j]+bias1[j];
-            printf("%f \n",L1_out[i][j]);
+            // printf("%f \n",L1_out[i][j]);
         }
     }
     // matmul layer 2
