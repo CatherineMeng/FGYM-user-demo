@@ -23,7 +23,7 @@ const int L3 = 2;
 //PE array dimensions
 #define P 1
 //#define T 32
-#define T 256
+#define T 64 //original:128
 
 #define P2 1
 #define T2 2
@@ -36,7 +36,7 @@ typedef struct {
 } blockvec;
 
 typedef struct {
-	float a[L2];
+	float a[L2/4]; //128 
 } w1blockvec;
 typedef struct {
 	float a[L3];
@@ -52,7 +52,7 @@ void loadIn(float In[],  hls::stream<blockvec> &Inrows,const int LL, int it);
 void loadW(float W[], w1blockvec w1bram[], const int LL, const int LN, int it);
 void loadW2(float W[], w3blockvec w2bram[], const int LL, const int LN, int it);
 void loadDDR(float In[], float W[], hls::stream<blockvec> &Arows, w1blockvec w1bram[], const int LL,const int LN,int it);
-void blockmatmul(hls::stream<blockvec> &Inrows, w1blockvec Wcols[], float C[BSIZE/P][512/T][P][T], const int LL,const int LN);
+void blockmatmul(hls::stream<blockvec> &Inrows, hls::stream<blockvec> &Crows,w1blockvec Wcols[], const int LL,const int LN,int it);
 void write_out_stream(float C[BSIZE/P][512/T][P][T], hls::stream<blockvec> &Crows,const int LN);
 void blockmatmul3(hls::stream<blockvec> &Inrows, w3blockvec Wcols[], hls::stream<blockvec> &Crows,const int LL,const int LN);
 void activation(hls::stream<blockvec> &Inrows, float bias[], hls::stream<blockvec> &Outrows,const int L);
