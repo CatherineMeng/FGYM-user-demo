@@ -257,10 +257,10 @@ void top(float *A, float *B1,float *B2,float *O){
 	// #pragma HLS bind_storage variable=C1 type=RAM_2P impl=bram
 
 
-	hls::stream<blockvec> outpipe[4];
+	hls::stream<blockvec> outpipe[3];
 	//hls::stream<blockvec> actpipe[3];
 	#pragma HLS STREAM variable=inpipe depth=64
-	#pragma HLS STREAM variable=outpipe depth=64
+	#pragma HLS STREAM variable=outpipe depth=512
 
 //	Init on-chip memory
 
@@ -268,6 +268,7 @@ void top(float *A, float *B1,float *B2,float *O){
   #pragma HLS DATAFLOW
 	// for (int it=0; it<L1_total/L1;it++){
 	for (int it=0; it<4;it++){
+		#pragma HLS DATAFLOW
 		// need a iteration number in the argument! - it
 		// loadDDR(A, B1, inpipe, w1bram, L1,L2,it);
 		loadDDR(A, B1, inpipe, w1bram, L1_total,L2,it);
@@ -288,9 +289,9 @@ void top(float *A, float *B1,float *B2,float *O){
   loadW2(B2, w2bram, L2,L3,0);
 	blockmatmul3(outpipe[1], w2bram, outpipe[2],L2,L3);
   printf("MM 2\n");
-  activation(outpipe[2], bias2, outpipe[3],L3);
+  // activation(outpipe[2], bias2, outpipe[3],L3);
   printf("activation 2\n");
-	storeDDR(O, outpipe[3], L3);
+	storeDDR(O, outpipe[2], L3);
   printf("kernel really finished\n");
 }
 }
