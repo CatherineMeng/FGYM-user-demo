@@ -32,5 +32,12 @@ pip install pyopencl
 ```
 pip install stable-baselines3
 ```
-
+Other packages to enable visualization of testing and profiling funtionalities:
+```
+pip install pyexcel pyexcel-xlsx
+pip install numpy
+pip install matplotlib
+pip install tqdm
+pip install prettytable
+```
 ## Organizaion and Usage
