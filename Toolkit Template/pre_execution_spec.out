@@ -1,9 +1,0 @@
-Kernel format (weights streamed from DDR):
-top(blockvec *In, float *A, float *B,blockmat *Out)
-
-
-or
-
-
-Kernel format (weights entirely on-chip):
-top(blockvec *A, blockmat *C)
