@@ -1,4 +1,4 @@
 platform=xilinx_u200_xdma_201830_2
 DDR 4 
-HBM 16
+HBM 0
 PLRAM 128
