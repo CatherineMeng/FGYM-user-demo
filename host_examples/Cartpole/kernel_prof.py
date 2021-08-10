@@ -15,6 +15,6 @@ wtddr=sheet.cell_value(62, 9) #J63
 knfg=sheet.cell_value(45, 4) #E46
 
 print("=============Average Execution Time Breakdwon per Iteration============")
-t = PrettyTable(['PCIE Host->Device', 'PCIE Device->Host','Kernel-Total','Kernel-Compute','Kernel-DDR_READ','Kernel-DDR_WRITE'])
-t.add_row([str(pcie_hd)+" ms",str(pcie_dh)+" ms",kernel_time_avg,str(knfg)+" ms",str(rdddr)+" ns",str(wtddr)+" ns"])
+t = PrettyTable(['PCIE Host->Device', 'PCIE Device->Host','Kernel-Compute','Kernel-DDR_READ','Kernel-DDR_WRITE'])
+t.add_row([str(pcie_hd)+" ms",str(pcie_dh)+" ms",str(knfg)+" ms",str(rdddr)+" ns",str(wtddr)+" ns"])
 print(t)
