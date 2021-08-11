@@ -9,9 +9,9 @@ Demonstrating the usage of FGYM: A Toolkit for benchmarking FPGA-accelerated Rei
 FPGA-based heterogeneous computing platforms are promising candidates to enable fast training of Reinforcement Learning (RL) agents. Typically, an RL agent for an environment is trained via interactions with a software that simulates the environment. While several toolkits exist to quickly deploy RL training on CPU or GPU, there lacks a similar toolkit for FPGAs. 
 ![High-Level-ovvw](https://github.com/CatherineMeng/FGYM-user-demo/blob/main/fig/ovvw.png)
 
-Interfacing GYM with an FPGA based RL agent remains a manual and time-consuming process. To address this issue and ease the deployment process of RL using FPGAs, we demonstrate FGYM (FPGA-GYM) - a toolkit that generates an end-to-end interface between the simulation environments running on the CPU and agents running on the FPGA. FGYM supports all GYM environments specified in the python host program and automatically generates the on-chip memory interface using PCIe. FGYM supports multiple levels of parallelism including vectorized agent-environment interactions and memory port aggregation. Building upon [VITIS](https://github.com/Xilinx/Vitis-Tutorials) execution flow, It also provides post-execution profiling results for users to identify the execution bottlenecks. 
+we demonstrate FGYM (FPGA-GYM) - a toolkit that generates an end-to-end interface between the simulation environments running on the CPU and agents running on the FPGA. Building upon [VITIS](https://github.com/Xilinx/Vitis-Tutorials) execution flow, It also provides post-execution profiling results for users to identify the execution bottlenecks. 
 
-By bridging python host code with FPGA kernel through pyopencl library and [XRT](https://github.com/Xilinx/XRT), FGYM targets developers and academic researchers in both FPGA and Deep Learning community.
+By bridging python thee domain-specific host code with FPGA kernel through pyopencl library and [XRT](https://github.com/Xilinx/XRT), FGYM targets developers and academic researchers in both FPGA and Deep Learning community.
 
 ### High-Level Workflow
 
