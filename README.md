@@ -11,8 +11,6 @@ FPGA-based heterogeneous computing platforms are promising candidates to enable 
 
 we demonstrate FGYM (FPGA-GYM) - a toolkit that generates an end-to-end interface between the simulation environments running on the CPU and agents running on the FPGA. Building upon [VITIS](https://github.com/Xilinx/Vitis-Tutorials) execution flow, It also provides post-execution profiling results for users to identify the execution bottlenecks. 
 
-By bridging python with FPGA kernel through pyopencl library and [XRT](https://github.com/Xilinx/XRT), FGYM targets developers and academic researchers in both FPGA and Deep Learning community.
-
 ### High-Level Workflow
 
 ![High-Level-wrkfl](https://github.com/CatherineMeng/FGYM-user-demo/blob/main/fig/diag.png)
