@@ -5,10 +5,10 @@ General instructions, formatting of the input spec files, etc
 
 The algorithmic input file <algo.in> should specify common hyper-parameters shared by most deep reinforcement algorithms. Their meanings are explained as the following:
 ```
-N: This is the number of parallel agents deployed, which is equivalent to the policy inference batch size in a fully synchronous setting supported by subVecEnv
-T: This is the rollout trajectory length, that is, how many environment steps are executed by each one of the parallel agents in one iteration of RL
-M: This is the training batch size
-K: This is the number of training epoch on the same batch of experiences each time the training function is called
+N: The number of parallel agents deployed, which is equivalent to the policy inference batch size in a fully synchronous setting supported by subVecEnv
+T: The rollout trajectory length, that is, how many environment steps are executed by each one of the parallel agents in one iteration of RL
+M: The training batch size
+K: The number of training epoch on the same batch of experiences each time the training function is called
 ```
 They should be put in the exact order specified in the example **algo.in** file, each followed by a space and an integer value.
 Note that N and M specifically impact the kernel interface. Therefore, N and M are required for the pre-execution program, and all are required for the **host_.py** program.
