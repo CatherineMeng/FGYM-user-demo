@@ -11,7 +11,7 @@ FPGA-based heterogeneous computing platforms are promising candidates to enable 
 
 we demonstrate FGYM (FPGA-GYM) - a toolkit that generates an end-to-end interface between the simulation environments running on the CPU and agents running on the FPGA. Building upon [VITIS](https://github.com/Xilinx/Vitis-Tutorials) execution flow, It also provides post-execution profiling results for users to identify the execution bottlenecks. 
 
-By bridging python thee domain-specific host code with FPGA kernel through pyopencl library and [XRT](https://github.com/Xilinx/XRT), FGYM targets developers and academic researchers in both FPGA and Deep Learning community.
+By bridging python with FPGA kernel through pyopencl library and [XRT](https://github.com/Xilinx/XRT), FGYM targets developers and academic researchers in both FPGA and Deep Learning community.
 
 ### High-Level Workflow
 
@@ -48,6 +48,8 @@ The "Tookit Template" folder includes all template files for the host generator,
 
 If you would like to modify an existing project as a starting point, the "Host Example" folder provides two complete examples of Deep RL algorithms on two different GYM benchmarking environments:
 Cartpole(DQN) and Pong(PPO).
+
+The "cpp_srcs" folder include FPGA HLS source codes for different versions of agent policy models that we developed for user demonstration. They can be compiled and used for generating bitstreams for different DNN policies with customization of parameters in the header files.
 
 ### (Optional) Pre-Execution
 
@@ -94,7 +96,7 @@ cd host_examples/Pong
 host_program.py -m eval -v 1 -i host_params.in -b mlp_DDR_pong_1.xclbin -e PongNoFrameskip-v4 
 ```
 
-The host program shows a high-level profiling result at the end of execution, which returns the latency breakdown the the major Deep RL components: Policy Inferences, Environmental Steps, Training, Others.
+The host program shows a high-level profiling result at the end of execution, which returns the latency breakdown of the major Deep RL components: Policy Inferences, Environmental Steps, Training, Others.
 
 The basic host generator provides an implementation of DQN from user-specified number of parallel rollout-agents and training batch sizes, where DNN policy is off-loaded to the FPGA. The program can then be modified for more advanced optimizations (e.g. image pre-processing for Atari - example in host_examples/Pong; training function customizations and acceleration, etc).
 
@@ -104,6 +106,7 @@ To view the low-level profiling results including kernel computation, PCIe and D
 Example: 
 ```
 cd host_examples/Cartpole
+python host_sync.py -i host_params.in -e CartPole-v0 -b top_allprofile.xclbin -m train -p 1
 cp ../../Toolkit\ Template/kernel_prof.py .
 kernel_prof.py 
 ```
