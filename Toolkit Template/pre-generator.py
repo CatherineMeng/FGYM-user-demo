@@ -4,10 +4,10 @@ import gym
 from prettytable import PrettyTable
 
 if __name__ == "__main__":
-    if(len(sys.argv)!=4 and len(sys.argv)!=5):
+    if(len(sys.argv)!=4 and len(sys.argv)!=5 and len(sys.argv)!=6):
         print(len(sys.argv))
         print ("Command Arg Error! \
-            required format: python generator.py <device_metadata>.in <algo_cfg>.in env_name --(optional)profile_status")
+            required format: python generator.py <device_metadata>.in <algo_cfg>.in env_name --(optional)profile_status --(optional)eval/train")
         sys.exit()
 
  #    print ("=======================================")
@@ -93,24 +93,41 @@ if __name__ == "__main__":
     
     for i in range(num_layers):
         f.write("sp=top_1.W"+str(i)+":"+main_mem+"[0]\n")
-
+    
+    if (len(sys.argv)==6 and sys.argv[5].strip("-")=="Train"):
+        f.write("sp=top_1.train_samples:"+main_mem+"[1]\n")
     # bitstream_name=sys.argv[3].strip("-")
     
-    if (len(sys.argv)==5 and sys.argv[4].strip("-")=="Prof_On"):
+    if (len(sys.argv)>=5 and sys.argv[4].strip("-")=="Prof_On"):
         f.write("\n\n[profile]\n")
         f.write("data=all:all:all")
 
     top_format_sim="void top("+"float *In, "+"float *Out, "
+    top_format_py='# '+"krnl_policy(queue, (1,), (1,), obs_buf, res_g, "
+    str_dec='# '+"res_g = cl.Buffer(ctx, mf.WRITE_ONLY, streamout.nbytes)\n# obs_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=d_obs_flatten)\n"
     for i in range(num_layers):
+        str_dec+= '# '+"b"+str(i)+"_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=w"+str(i)+"_flatten)\n"
         if (i==num_layers-1):
-            top_format_sim+=("float *W"+str(i))
+            top_format_sim+=("float *W"+str(i)+', ')
+            top_format_py+=("b"+str(i)+"_buf,")
         else:
             top_format_sim+=("float *W"+str(i)+', ')
+            top_format_py+=("b"+str(i)+"_buf,")
+    if (len(sys.argv)==6 and sys.argv[5].strip("-")=="Train"):
+        top_format_sim+="float *train_samples"
+        top_format_py+=("sample_buf")
+        str_dec+='# '+"sample_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=samp_flatten)\n"
     top_format_sim+=");"
+    top_format_py+=(")")
     # top_format_agg=
     # void top(float *A, float *B1,float *B2,float *O)
     f.write('\n\n# Using the example top module declaration & function ports as the following:\n')
-    f.write('#'+top_format_sim)
+    f.write('# '+top_format_sim)
+
+    f.write('\n\n# Using the follwoing format for the function ports in the python host program:\n')
+    f.write(str_dec)
+    f.write(top_format_py)
+    f.write('\n# cl.enqueue_copy(queue, res_np, res_g)\n# action,prob=res_np')
     f.close()
     print("Pre-Execution Specifications:")
 
@@ -123,11 +140,15 @@ if __name__ == "__main__":
     mTab.add_row(["Model Update batch size", M])
     mTab.add_row(["# Main Memory Ports", num_kernel_arg])
     mTab.add_row(["Total observation size (KB)", required_memory])
+    if (len(sys.argv)==6 and sys.argv[5].strip("-")=="Train"):
+        mTab.add_row(["Mode", "Train"])
+    else:
+        mTab.add_row(["Mode", "Evaluation"])
     if (flag_plr==1):
         mTab.add_row(["PLRAM", "Enabled"])
     else:
         mTab.add_row(["PLRAM", "Disabled"])
-    if (len(sys.argv)==5 and sys.argv[4]=="Prof_On"):
+    if (len(sys.argv)>=5 and sys.argv[4].strip("-")=="Prof_On"):
         mTab.add_row(["Profiling", "Enabled"])
     else:
         mTab.add_row(["Profiling", "Disabled"])
