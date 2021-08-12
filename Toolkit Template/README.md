@@ -28,7 +28,7 @@ DDR 4
 HBM 2
 ```
 
-Some platforms support [PLRAM](https://japan.xilinx.com/html_docs/xilinx2020_1/vitis-guidance/PLRAM_USAGE.html), which uses part of the on-chip SRAM as the global memory when communicating data through PCIe. This gives lower-latency data migration than using DDR as the global memory. The pre-execution program will help decide whether the observation data of a certain gym environ,ent can take advantage of such functionalitis. To enable this, list the size of availanle PLRAM storag ein KB (put 0 if no PLRAM support):
+Some platforms support [PLRAM](https://japan.xilinx.com/html_docs/xilinx2020_1/vitis-guidance/PLRAM_USAGE.html), which uses part of the on-chip SRAM as the global memory when communicating data through PCIe. This gives lower-latency data migration than using DDR as the global memory. The pre-execution program will help decide whether the observation data of a certain gym environment can take advantage of such functionalitis. To enable this, list the size of availanle PLRAM storag ein KB (put 0 if no PLRAM support):
 ```
 PLRAM 128
 ```
